@@ -1,0 +1,50 @@
+{
+    "name": "LeaveRecord",
+    "fields": [
+        {
+            "fieldName": "type",
+            "fieldType": "LeaveType",
+            "fieldValues": "CASUAL,SICK"
+        },
+        {
+            "fieldName": "leaveStartDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "leaveEndDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "employeeId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "leaveCause",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "LeaveStatus",
+            "fieldValues": "PENDING,VERIFIED,DENIED,APPROVED,REJECTED"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "employee",
+            "otherEntityRelationshipName": "leaveRecord",
+            "relationshipName": "employee",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191114052027",
+    "entityTableName": "leave_record",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

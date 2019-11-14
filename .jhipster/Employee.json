@@ -1,0 +1,64 @@
+{
+    "name": "Employee",
+    "fields": [
+        {
+            "fieldName": "password",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "address",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "contact",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "rank",
+            "fieldType": "EmployeeRank",
+            "fieldValues": "DEVELOPER,MANAGER,HR"
+        },
+        {
+            "fieldName": "casualLeave",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "sickLeave",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "joinDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "isEmployed",
+            "fieldType": "Boolean"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "leaveRecord",
+            "otherEntityRelationshipName": "employee",
+            "relationshipName": "leaveRecord"
+        }
+    ],
+    "changelogDate": "20191114052026",
+    "entityTableName": "employee",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "readOnly": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

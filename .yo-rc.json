@@ -1,0 +1,36 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.itc.leaveapplication"
+    },
+    "jhipsterVersion": "6.4.1",
+    "applicationType": "monolith",
+    "baseName": "LeaveApplication",
+    "packageName": "com.itc.leaveapplication",
+    "packageFolder": "com/itc/leaveapplication",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "hazelcast",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "MmEwOWUxOWJlN2NjMmNhOTQyNmYxY2UzMjY3Y2U0MjVjMDNjYzQ4M2VhYWQ4N2I2YWQwMTQxY2JhYTdmYWY2NzZhNTZjN2UwMzQwYTQ3NDQyMGEwZDg2Y2I1OWIwOTVhZTNjMmE5MDY2ZDdmNzI2ZDllOTY2NjUwMTMwYzQ5Y2M=",
+    "embeddableLaunchScript": false,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "blueprints": [],
+    "skipClient": true
+  }
+}

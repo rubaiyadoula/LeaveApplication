@@ -1,0 +1,11 @@
+id;type;leave_start_date;leave_end_date;employee_id;leave_cause;status
+1;CASUAL;2019-11-13;2019-11-13;22649;deposit Sausages;REJECTED
+2;CASUAL;2019-11-13;2019-11-13;25794;deposit;REJECTED
+3;CASUAL;2019-11-13;2019-11-14;33902;cross-media;DENIED
+4;SICK;2019-11-13;2019-11-13;60642;Tools Unbranded;DENIED
+5;SICK;2019-11-13;2019-11-13;65196;Devolved driver Networked;PENDING
+6;SICK;2019-11-13;2019-11-13;56830;Sleek turn-key;PENDING
+7;CASUAL;2019-11-13;2019-11-13;63113;cross-platform Borders;DENIED
+8;SICK;2019-11-13;2019-11-13;2431;deposit Chips Applications;VERIFIED
+9;SICK;2019-11-13;2019-11-13;85300;disintermediate;APPROVED
+10;SICK;2019-11-13;2019-11-13;69602;Arkansas Intelligent Credit Card Account;DENIED

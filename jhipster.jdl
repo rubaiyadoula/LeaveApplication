@@ -1,0 +1,45 @@
+entity Employee {
+    id Long,
+    password String,
+    name String,
+    email String,
+    address String,
+    contact String,
+    rank EmployeeRank,
+    casualLeave Integer,
+    sickLeave Integer,
+    joinDate LocalDate,
+    isEmployed Boolean
+}
+
+entity LeaveRecord {
+    id Long,
+    type LeaveType,
+    leaveStartDate LocalDate,
+    leaveEndDate LocalDate,
+    employeeId Long,
+    leaveCause String,
+    status LeaveStatus
+}
+
+enum EmployeeRank {
+    DEVELOPER, MANAGER, HR
+}
+
+enum LeaveType {
+    CASUAL, SICK
+}
+
+enum LeaveStatus {
+    PENDING, VERIFIED, DENIED, APPROVED, REJECTED
+}
+
+relationship OneToMany {
+    Employee to LeaveRecord
+}
+
+dto Employee,LeaveRecord with mapstruct
+
+paginate Employee,LeaveRecord with pagination
+
+service Employee,LeaveRecord with serviceClass
