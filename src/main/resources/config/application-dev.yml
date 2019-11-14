@@ -21,9 +21,9 @@ logging:
 
 spring:
   profiles:
-    active: dev
+    active: dev, no-liquibase
     include:
-      - swagger, no-liquibase
+      - swagger
       # Uncomment to activate TLS for the dev profile
       #- tls
   devtools:

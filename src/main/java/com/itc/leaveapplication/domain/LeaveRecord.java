@@ -36,7 +36,8 @@ public class LeaveRecord implements Serializable {
     @Column(name = "leave_end_date")
     private LocalDate leaveEndDate;
 
-    @Column(name = "employee_id")
+    //@Column(name = "employee_id")
+    @Transient
     private Long employeeId;
 
     @Column(name = "leave_cause")

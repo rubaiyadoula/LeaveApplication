@@ -54,7 +54,7 @@ public class EmployeeResource {
     @PostMapping("/employees")
     public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) throws URISyntaxException {
         log.debug("REST request to save Employee : {}", employeeDTO);
-        if (employeeDTO.getId() != null) {
+        if (employeeDTO.getId() == null) {
             throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
         }
         EmployeeDTO result = employeeService.save(employeeDTO);
