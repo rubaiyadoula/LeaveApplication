@@ -38,12 +38,10 @@ public class LeaveApplicationResource {
         }
         LeaveRecordDTO result = leaveApplicationService.applyForLeave(leaveRecord);
         return ResponseEntity.created(new URI("/api/leaves/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, "leave_record", result.getId().toString()))
             .body(result);
     }
 
 //    public ResponseEntity<Void> viewLeaveStatus(@PathVariable Long leaveId) {
-//
 //        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
 //    }
 }
