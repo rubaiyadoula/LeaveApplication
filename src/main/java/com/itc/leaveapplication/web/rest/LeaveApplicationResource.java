@@ -31,7 +31,7 @@ public class LeaveApplicationResource {
         this.leaveApplicationService = leaveApplicationService;
     }
 
-    @PostMapping("/leaves")
+    @PostMapping("/createLeaves")
     public ResponseEntity<LeaveRecordDTO> applyLeave(@RequestBody LeaveRecordDTO leaveRecord) throws URISyntaxException {
         if(leaveRecord.getId() != null) {
             throw new BadRequestAlertException("A new leaveRecord cannot already have an ID", "leave_record", "idexists");
@@ -41,7 +41,9 @@ public class LeaveApplicationResource {
             .body(result);
     }
 
-//    public ResponseEntity<Void> viewLeaveStatus(@PathVariable Long leaveId) {
-//        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
-//    }
+    @GetMapping("/getLeaveStatus")
+    public ResponseEntity<String> viewLeaveStatus(@PathVariable Long leaveId) {
+        // Continue from here
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
+    }
 }

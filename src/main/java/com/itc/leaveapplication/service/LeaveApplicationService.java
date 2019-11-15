@@ -59,13 +59,13 @@ public class LeaveApplicationService {
      */
 
     @Transactional(readOnly = true)
-    public void viewLeaveStatus(Long leaveId) {
+    public String viewLeaveStatus(Long leaveId) {
         Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
         if(!leaveRecord.get().getStatus().equals(LeaveStatus.APPROVED) ||
             !leaveRecord.get().getStatus().equals(LeaveStatus.REJECTED)) {
-            System.out.println(LeaveStatus.PENDING);
+            return LeaveStatus.PENDING.toString();
         } else {
-            System.out.println(leaveRecord.get().getStatus());
+            return leaveRecord.get().getStatus().toString();
         }
     }
 
