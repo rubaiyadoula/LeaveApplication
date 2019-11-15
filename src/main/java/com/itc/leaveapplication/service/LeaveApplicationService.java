@@ -5,46 +5,89 @@ import com.itc.leaveapplication.domain.enumeration.LeaveStatus;
 import com.itc.leaveapplication.domain.enumeration.LeaveType;
 import com.itc.leaveapplication.service.dto.EmployeeDTO;
 import com.itc.leaveapplication.service.dto.LeaveRecordDTO;
+import com.itc.leaveapplication.web.rest.EmployeeResource;
+import com.itc.leaveapplication.web.rest.LeaveRecordResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URISyntaxException;
 import java.util.Optional;
 
+@Service
+@Transactional
 public class LeaveApplicationService {
+    private EmployeeResource employeeResource;
+    private LeaveRecordResource leaveRecordResource;
     private EmployeeService employeeService;
     private LeaveRecordService leaveRecordService;
 
-    public LeaveApplicationService(EmployeeService employeeService, LeaveRecordService leaveRecordService) {
+    public LeaveApplicationService(
+        EmployeeResource employeeResource,
+        LeaveRecordResource leaveRecordResource,
+        EmployeeService employeeService,
+        LeaveRecordService leaveRecordService) {
+        this.employeeResource = employeeResource;
+        this.leaveRecordResource = leaveRecordResource;
         this.employeeService = employeeService;
         this.leaveRecordService = leaveRecordService;
     }
 
-    /// Employee
-    /// All employees can apply for leave, view their applied leave's status and also check their remaining leaves.
-    /// These operations can be done by any employees, be it developer, hr or manager.
+    /**
+     *
+     * Employees can apply for Leave.
+     * The Leave Status will be changed to PENDING.
+     * @param leaveRecord the leaveRecordDTO to create
+     */
 
     public void applyForLeave(LeaveRecordDTO leaveRecord) {
-        leaveRecord.setStatus(LeaveStatus.PENDING);
+        try {
+            leaveRecordResource.createLeaveRecord(leaveRecord);
+            leaveRecord.setStatus(LeaveStatus.PENDING);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     *
+     * Employees can view their leave status
+     * As oppose to not expose the status while HR & Manager are reviewing the leave application,
+     * the leave status will be shown PENDING until APPROVED or REJECTED
+     * @param leaveId the leaveId to track leaveStatus
+     */
+
+    @Transactional(readOnly = true)
     public void viewLeaveStatus(Long leaveId) {
         Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
-        if(leaveRecord.get().getStatus().equals(LeaveStatus.VERIFIED) ||
-            leaveRecord.get().getStatus().equals(LeaveStatus.DENIED)) {
+        if(!leaveRecord.get().getStatus().equals(LeaveStatus.APPROVED) ||
+            !leaveRecord.get().getStatus().equals(LeaveStatus.REJECTED)) {
             System.out.println(LeaveStatus.PENDING);
         } else {
             System.out.println(leaveRecord.get().getStatus());
         }
     }
 
+    /**
+     *
+     * Employees can view their Leave Balance, both CASUAL & SICK.
+     * @param id the employeeId to track the employee's leave balance.
+     */
+
+    @Transactional(readOnly = true)
     public void viewLeaveBalance(Long id) {
         Optional<EmployeeDTO> employee = employeeService.findOne(id);
         System.out.println("Remaining casual leave(s): " + employee.get().getCasualLeave());
         System.out.println("Remaining sick leave(s): " + employee.get().getSickLeave());
     }
 
-    /// HR
-    /// HR will verify leaves based on the amount of remaining leaves.
-    /// In case, there aren't any remaining leaves, the leave will be denied.
+    /**
+     *
+     * HR will verify leaves is there are remaining leaves.
+     * If no remaining leaves are available, the leave will be denied.
+     * @param employeeId HR's ID for authorization
+     * @param leaveId leaveId to track the leaves
+     */
 
     public void verifyOrDenyLeave(Long employeeId, Long leaveId) {
         Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
@@ -62,15 +105,12 @@ public class LeaveApplicationService {
         }
     }
 
-    /// Manager
-    /// If HR has verified the leave, the Manager will most probably approve it too.
-    /// In case, there are any active project the employee that applied for the leave is working on,
-    /// the leave will be rejected. In this case, Manager will have to reject the leave manually.
-
-    /// If HR has denied the leave, the Manager will reject it.
-    /// In case, it's an emergency, based on the situation, the Manager can approve it manyally.
-
-    /// Manager can also view all the leaves.
+    /**
+     *
+     * Manager will APPROVE or REJECT the leave based on HR's decision.
+     * @param employeeId to authorize manager's rank.
+     * @param leaveId to track the leave.
+     */
 
     public void approveOrRejectLeave(Long employeeId, Long leaveId) {
         Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
@@ -95,8 +135,14 @@ public class LeaveApplicationService {
         }
     }
 
+    /**
+     *
+     * Manager can view all the leaves.
+     * @param id to authorize the view request.
+     */
+
     public void viewLeaveList(Long id) {
         Optional<EmployeeDTO> manager = employeeService.findOne(id);
-        System.out.println(leaveRecordService.findAll(PageRequest.of(1, 10)));
+        System.out.println(leaveRecordService.findAll(PageRequest.of(0, 10)));
     }
 }
