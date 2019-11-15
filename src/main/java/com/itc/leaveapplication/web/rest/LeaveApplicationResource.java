@@ -1,9 +1,11 @@
 package com.itc.leaveapplication.web.rest;
 
+import com.itc.leaveapplication.domain.enumeration.LeaveStatus;
 import com.itc.leaveapplication.service.LeaveApplicationService;
 import com.itc.leaveapplication.service.dto.LeaveRecordDTO;
 import com.itc.leaveapplication.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,8 +44,10 @@ public class LeaveApplicationResource {
     }
 
     @GetMapping("/getLeaveStatus")
-    public ResponseEntity<String> viewLeaveStatus(@PathVariable Long leaveId) {
+    public ResponseEntity<Enum<LeaveStatus>> viewLeaveStatus(@PathVariable Long leaveId) {
         // Continue from here
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
+        log.debug("REST request to get Leave Status", leaveId);
+        Enum<LeaveStatus> leaveStatus = leaveApplicationService.viewLeaveStatus(leaveId);
+        return ResponseEntity.ok(leaveStatus);
     }
 }
