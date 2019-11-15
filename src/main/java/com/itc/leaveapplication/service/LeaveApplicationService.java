@@ -40,20 +40,21 @@ public class LeaveApplicationService {
      * @param leaveRecord the leaveRecordDTO to create
      */
 
-    public void applyForLeave(LeaveRecordDTO leaveRecord) {
+    public LeaveRecordDTO applyForLeave(LeaveRecordDTO leaveRecord) {
         try {
             leaveRecordResource.createLeaveRecord(leaveRecord);
             leaveRecord.setStatus(LeaveStatus.PENDING);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+        return leaveRecord;
     }
 
     /**
      *
-     * Employees can view their leave status
+     * Employees can view their leave status.
      * As oppose to not expose the status while HR & Manager are reviewing the leave application,
-     * the leave status will be shown PENDING until APPROVED or REJECTED
+     * the leave status will be shown PENDING until APPROVED or REJECTED.
      * @param leaveId the leaveId to track leaveStatus
      */
 
@@ -83,7 +84,7 @@ public class LeaveApplicationService {
 
     /**
      *
-     * HR will verify leaves is there are remaining leaves.
+     * HR will verify the leave if there are any remaining leaves.
      * If no remaining leaves are available, the leave will be denied.
      * @param employeeId HR's ID for authorization
      * @param leaveId leaveId to track the leaves

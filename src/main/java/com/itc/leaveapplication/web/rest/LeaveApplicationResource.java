@@ -8,10 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * REST controller for managing {@link com.itc.leaveapplication.service.LeaveApplicationService}.
@@ -32,10 +32,18 @@ public class LeaveApplicationResource {
     }
 
     @PostMapping("/leaves")
-    public ResponseEntity<Void> applyLeave(@RequestBody LeaveRecordDTO leaveRecord) {
+    public ResponseEntity<LeaveRecordDTO> applyLeave(@RequestBody LeaveRecordDTO leaveRecord) throws URISyntaxException {
         if(leaveRecord.getId() != null) {
             throw new BadRequestAlertException("A new leaveRecord cannot already have an ID", "leave_record", "idexists");
         }
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveRecord.toString())).build();
+        LeaveRecordDTO result = leaveApplicationService.applyForLeave(leaveRecord);
+        return ResponseEntity.created(new URI("/api/leaves/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, "leave_record", result.getId().toString()))
+            .body(result);
     }
+
+//    public ResponseEntity<Void> viewLeaveStatus(@PathVariable Long leaveId) {
+//
+//        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
+//    }
 }

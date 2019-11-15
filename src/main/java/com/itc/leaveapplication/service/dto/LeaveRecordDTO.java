@@ -2,6 +2,8 @@ package com.itc.leaveapplication.service.dto;
 import java.time.LocalDate;
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.itc.leaveapplication.domain.enumeration.LeaveType;
 import com.itc.leaveapplication.domain.enumeration.LeaveStatus;
 
@@ -14,8 +16,10 @@ public class LeaveRecordDTO implements Serializable {
 
     private LeaveType type;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate leaveStartDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate leaveEndDate;
 
     private Long employeeId;
