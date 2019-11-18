@@ -65,6 +65,13 @@ public class EmployeeService {
      * @param id the id of the entity.
      * @return the entity.
      */
+//    @Transactional(readOnly = true)
+//    public Optional<EmployeeDTO> findOne(Long id) {
+//        log.debug("Request to get Employee : {}", id);
+//        return employeeRepository.findById(id)
+//            .map(employeeMapper::toDto);
+//    }
+
     @Transactional(readOnly = true)
     public Optional<EmployeeDTO> findOne(Long id) {
         log.debug("Request to get Employee : {}", id);

@@ -1,6 +1,7 @@
 package com.itc.leaveapplication.service.mapper;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contract for a generic dto to entity mapper.

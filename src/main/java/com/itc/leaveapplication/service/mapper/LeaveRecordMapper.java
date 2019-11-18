@@ -5,6 +5,8 @@ import com.itc.leaveapplication.service.dto.LeaveRecordDTO;
 
 import org.mapstruct.*;
 
+import java.util.Optional;
+
 /**
  * Mapper for the entity {@link LeaveRecord} and its DTO {@link LeaveRecordDTO}.
  */

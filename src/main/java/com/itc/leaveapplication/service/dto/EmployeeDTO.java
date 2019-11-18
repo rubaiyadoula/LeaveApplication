@@ -31,7 +31,6 @@ public class EmployeeDTO implements Serializable {
 
     private Boolean isEmployed;
 
-
     public Long getId() {
         return id;
     }

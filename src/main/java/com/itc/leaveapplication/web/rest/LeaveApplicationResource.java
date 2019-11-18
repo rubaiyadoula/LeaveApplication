@@ -33,7 +33,7 @@ public class LeaveApplicationResource {
         this.leaveApplicationService = leaveApplicationService;
     }
 
-    @PostMapping("/createLeaves")
+    @PostMapping("/leaves")
     public ResponseEntity<LeaveRecordDTO> applyLeave(@RequestBody LeaveRecordDTO leaveRecord) throws URISyntaxException {
         if(leaveRecord.getId() != null) {
             throw new BadRequestAlertException("A new leaveRecord cannot already have an ID", "leave_record", "idexists");
@@ -43,11 +43,31 @@ public class LeaveApplicationResource {
             .body(result);
     }
 
-    @GetMapping("/getLeaveStatus")
-    public ResponseEntity<Enum<LeaveStatus>> viewLeaveStatus(@PathVariable Long leaveId) {
-        // Continue from here
+    @GetMapping("/leave-status/{leaveId}")
+    public ResponseEntity<Enum<LeaveStatus>> getLeaveStatus(@PathVariable Long leaveId) {
         log.debug("REST request to get Leave Status", leaveId);
         Enum<LeaveStatus> leaveStatus = leaveApplicationService.viewLeaveStatus(leaveId);
         return ResponseEntity.ok(leaveStatus);
+    }
+
+    @GetMapping("/casual-leave-balance/{employeeId}")
+    public ResponseEntity<Integer> getCasualBalance(@PathVariable Long employeeId) {
+        log.debug("REST request to get Casual Leave Balance", employeeId);
+        int casualLeaves = leaveApplicationService.viewCasualLeaveBalance(employeeId);
+        return ResponseEntity.ok(casualLeaves);
+    }
+
+    @GetMapping("/sick-leave-balance/{employeeId}")
+    public ResponseEntity<Integer> getSickBalance(@PathVariable Long employeeId) {
+        log.debug("REST request to get Sick Leave Balance", employeeId);
+        int sickLeaves = leaveApplicationService.viewSickLeaveBalance(employeeId);
+        return ResponseEntity.ok(sickLeaves);
+    }
+
+    @PutMapping("/leave-status/{employeeId}/{leaveId}")
+    public ResponseEntity<Void> updateLeaveStatus(@PathVariable Long employeeId, @PathVariable Long leaveId) {
+        log.debug("REST request to update leave status", employeeId, leaveId);
+        leaveApplicationService.verifyOrDenyLeave(employeeId, leaveId);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, leaveId.toString())).build();
     }
 }

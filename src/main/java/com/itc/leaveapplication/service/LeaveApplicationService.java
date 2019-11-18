@@ -1,13 +1,18 @@
 package com.itc.leaveapplication.service;
 
+import com.itc.leaveapplication.domain.Employee;
+import com.itc.leaveapplication.domain.LeaveRecord;
 import com.itc.leaveapplication.domain.enumeration.EmployeeRank;
 import com.itc.leaveapplication.domain.enumeration.LeaveStatus;
 import com.itc.leaveapplication.domain.enumeration.LeaveType;
 import com.itc.leaveapplication.service.dto.EmployeeDTO;
 import com.itc.leaveapplication.service.dto.LeaveRecordDTO;
+import com.itc.leaveapplication.service.mapper.EmployeeMapper;
+import com.itc.leaveapplication.service.mapper.LeaveRecordMapper;
 import com.itc.leaveapplication.web.rest.EmployeeResource;
 import com.itc.leaveapplication.web.rest.LeaveRecordResource;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +26,22 @@ public class LeaveApplicationService {
     private LeaveRecordResource leaveRecordResource;
     private EmployeeService employeeService;
     private LeaveRecordService leaveRecordService;
+    private EmployeeMapper employeeMapper;
+    private LeaveRecordMapper leaveRecordMapper;
 
     public LeaveApplicationService(
         EmployeeResource employeeResource,
         LeaveRecordResource leaveRecordResource,
         EmployeeService employeeService,
-        LeaveRecordService leaveRecordService) {
+        LeaveRecordService leaveRecordService,
+        EmployeeMapper employeeMapper,
+        LeaveRecordMapper leaveRecordMapper) {
         this.employeeResource = employeeResource;
         this.leaveRecordResource = leaveRecordResource;
         this.employeeService = employeeService;
         this.leaveRecordService = leaveRecordService;
+        this.employeeMapper = employeeMapper;
+        this.leaveRecordMapper = leaveRecordMapper;
     }
 
     /**
@@ -61,12 +72,12 @@ public class LeaveApplicationService {
     @Transactional(readOnly = true)
     public Enum<LeaveStatus> viewLeaveStatus(Long leaveId) {
         Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
-        if(!leaveRecord.get().getStatus().equals(LeaveStatus.APPROVED) ||
-            !leaveRecord.get().getStatus().equals(LeaveStatus.REJECTED)) {
-            return LeaveStatus.PENDING;
-        } else {
-            return leaveRecord.get().getStatus();
-        }
+//        if(!leaveRecord.get().getStatus().equals(LeaveStatus.APPROVED) ||
+//            !leaveRecord.get().getStatus().equals(LeaveStatus.REJECTED)) {
+//            return LeaveStatus.PENDING;
+//        } else {
+        return leaveRecord.get().getStatus();
+//        }
     }
 
     /**
@@ -76,10 +87,15 @@ public class LeaveApplicationService {
      */
 
     @Transactional(readOnly = true)
-    public void viewLeaveBalance(Long id) {
+    public int viewCasualLeaveBalance(Long id) {
         Optional<EmployeeDTO> employee = employeeService.findOne(id);
-        System.out.println("Remaining casual leave(s): " + employee.get().getCasualLeave());
-        System.out.println("Remaining sick leave(s): " + employee.get().getSickLeave());
+        return employee.get().getCasualLeave();
+    }
+
+    @Transactional(readOnly = true)
+    public int viewSickLeaveBalance(Long id) {
+        Optional<EmployeeDTO> employee = employeeService.findOne(id);
+        return employee.get().getSickLeave();
     }
 
     /**
@@ -91,19 +107,25 @@ public class LeaveApplicationService {
      */
 
     public void verifyOrDenyLeave(Long employeeId, Long leaveId) {
-        Optional<LeaveRecordDTO> leaveRecord = leaveRecordService.findOne(leaveId);
-        Optional<EmployeeDTO> hr = employeeService.findOne(employeeId);
-        Optional<EmployeeDTO> employee = employeeService.findOne(leaveRecord.get().getEmployeeId());
+        Optional<LeaveRecordDTO> leaveRecordDTOOptional = leaveRecordService.findOne(leaveId);
+        LeaveRecordDTO leaveRecordDTO = leaveRecordDTOOptional.get();
 
-        if((hr.get().getRank().equals(EmployeeRank.HR) &&
-            leaveRecord.get().getLeaveCause() != null &&
-            leaveRecord.get().getStatus().equals(LeaveStatus.PENDING)) &&
-            (((leaveRecord.get().getType().equals(LeaveType.CASUAL)) && (employee.get().getCasualLeave() > 0)) ||
-            ((leaveRecord.get().getType().equals(LeaveType.SICK)) && (employee.get().getSickLeave() > 0)))) {
-            leaveRecord.get().setStatus(LeaveStatus.VERIFIED);
+        Optional<EmployeeDTO> hrDTO = employeeService.findOne(employeeId);
+        Employee hr = employeeMapper.toEntity(hrDTO.get());
+
+        Optional<EmployeeDTO> employeeDTO = employeeService.findOne(leaveRecordDTO.getEmployeeId());
+        Employee employee = employeeMapper.toEntity(employeeDTO.get());
+
+        if((hr.getRank().equals(EmployeeRank.HR) &&
+            leaveRecordDTO.getLeaveCause() != null &&
+            leaveRecordDTO.getStatus().equals(LeaveStatus.PENDING)) &&
+            (((leaveRecordDTO.getType().equals(LeaveType.CASUAL)) && (employee.getCasualLeave() > 0)) ||
+            ((leaveRecordDTO.getType().equals(LeaveType.SICK)) && (employee.getSickLeave() > 0)))) {
+            leaveRecordDTO.setStatus(LeaveStatus.VERIFIED);
         } else {
-            leaveRecord.get().setStatus(LeaveStatus.DENIED);
+            leaveRecordDTO.setStatus(LeaveStatus.DENIED);
         }
+        LeaveRecord leaveRecord = leaveRecordMapper.toEntity(leaveRecordDTO);
     }
 
     /**
